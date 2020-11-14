@@ -1,0 +1,11 @@
+let
+    Origen = Web.BrowserContents("URL_TO_YOUR_GOOGLESHEETS"),
+    #"Table extracted from HTML" = Html.Table(Origen, {{"Column1", "DIV[id='263329297'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(1)"}, {"Column2", "DIV[id='263329297'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(2)"}, {"Column3", "DIV[id='263329297'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(3)"}}, [RowSelector="DIV[id='263329297'] > DIV.ritz.grid-container > TABLE.waffle > * > TR"]),
+    #"Type changed" = Table.TransformColumnTypes(#"Table extracted from HTML",{{"Column1", Int64.Type}, {"Column2", type text}, {"Column3", type text}}),
+    #"Blank rows removed" = Table.SelectRows(#"Type changed", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+    #"Headers removed" = Table.PromoteHeaders(#"Blank rows removed", [PromoteAllScalars=true]),
+    #"Change type" = Table.TransformColumnTypes(#"Headers removed",{{"1", Int64.Type}, {"Deposit", Currency.Type}, {"Date", type date}}),
+    #"Columns removed" = Table.RemoveColumns(#"Change type",{"1"}),
+    #"Removed Blank Rows" = Table.SelectRows(#"Columns removed", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
+in
+    #"Removed Blank Rows"

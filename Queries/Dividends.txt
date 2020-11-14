@@ -1,0 +1,11 @@
+let
+    Origen = Web.BrowserContents("URL_TO_YOUR_GOOGLESHEETS"),
+    #"Table extracted from HTML" = Html.Table(Origen, {{"Column1", "DIV[id='1070135137'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(1)"}, {"Column2", "DIV[id='1070135137'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(2)"}, {"Column3", "DIV[id='1070135137'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(3)"}, {"Column4", "DIV[id='1070135137'] > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(4)"}}, [RowSelector="DIV[id='1070135137'] > DIV.ritz.grid-container > TABLE.waffle > * > TR"]),
+    #"Type changed" = Table.TransformColumnTypes(#"Table extracted from HTML",{{"Column1", Int64.Type}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}}),
+    #"Columns removed" = Table.RemoveColumns(#"Type changed",{"Column1"}),
+    #"Blank rows deleted" = Table.SelectRows(#"Columns removed", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+    #"Headers removed" = Table.PromoteHeaders(#"Blank rows deleted", [PromoteAllScalars=true]),
+    #"Type has changed" = Table.TransformColumnTypes(#"Headers removed",{{"Product", type text}, {"Payment", Currency.Type}, {"Date", type date}}),
+    #"Column header changed" = Table.RenameColumns(#"Type has changed",{{"Payment", "Dividends paid"}})
+in
+    #"Column header changed"
