@@ -1,6 +1,6 @@
 # Investment Data Visualization for Trading212 with Microsoft Power BI
 
-The first thing to be done, is to create a table with the necessary data to be analyzed. This data comes from the extracts sent via email by Trading212 the day after you buy or sell a stock. This extracts look like this:
+The first thing to be done, is to create a table with the necessary data to be analyzed. This data comes from the extracts sent via email by Trading212 the day after you buy or sell a stock.
 
 Each time a new extract is issued, it needs to be added to an input Google Sheet table. In this case I decided to use Google Sheets to keep everything in a cloud, and also because it includes the function GOOGLEFINANCE() that allows to make some calculations needed to get stock values live. The template of this table can be copied to your own Google Drive from here.
 
